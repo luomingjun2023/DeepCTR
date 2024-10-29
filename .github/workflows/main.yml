@@ -1,0 +1,31 @@
+name: DO-NOT-DELETE-InfoSec-Mirroring
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+jobs:
+  ToCodeCommit:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+         fetch-depth: 0
+
+      - name: List files
+        run: pwd && ls -la
+
+      - name: Mirror to CodeCommit
+        env:
+          GIT_DISCOVERY_ACROSS_FILESYSTEM: true
+        uses: pixta-dev/repository-mirroring-action@v1
+        with:
+          target_repo_url:
+            ssh://git-codecommit.us-east-2.amazonaws.com/v1/repos/MXBIV2
+          ssh_private_key:
+            ${{ secrets.CODECOMMIT_SSH_PRIVATE_KEY }}
+          ssh_username:
+            ${{ secrets.CODECOMMIT_SSH_PRIVATE_KEY_ID }}
+
